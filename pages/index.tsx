@@ -1,11 +1,21 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { getAll } from "../graphql/Query";
+import { CREATE_POST } from "../graphql/Mutation";
 
 const Home: NextPage = () => {
   const { data, loading, error } = useQuery(getAll);
+  const [createPost] = useMutation(CREATE_POST);
   if (loading) return <div>loading...</div>;
+  const addPost = () => {
+    createPost({
+      variables: {
+        title: "next.jsからのタイトル",
+        description: "next.jsからの内容",
+      },
+    });
+  };
   if (error) return <div>error...</div>;
   return (
     <div className={styles.container}>
@@ -17,6 +27,10 @@ const Home: NextPage = () => {
           <p>{data.description}</p>
         </div>
       ))}
+
+      <hr />
+      {/* <input type="text" /> */}
+      <button onClick={() => addPost()}>記事投稿</button>
     </div>
   );
 };
