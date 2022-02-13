@@ -2,15 +2,17 @@ import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import { useMutation, useQuery } from "@apollo/client";
 import { getAll } from "../graphql/Query";
-import { CREATE_POST } from "../graphql/Mutation";
+import { CREATE_POST, DELETE_POST } from "../graphql/Mutation";
 import { useState } from "react";
 
 const Home: NextPage = () => {
   const { data, loading, error } = useQuery(getAll);
   const [createPost] = useMutation(CREATE_POST);
+  const [deletePost] = useMutation(DELETE_POST);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   if (loading) return <div>loading...</div>;
+  if (error) return <div>error...</div>;
   const addPost = () => {
     createPost({
       variables: {
@@ -19,7 +21,16 @@ const Home: NextPage = () => {
       },
     });
   };
-  if (error) return <div>error...</div>;
+
+  const removePost = (id: string) => {
+    console.log(id);
+
+    deletePost({
+      variables: {
+        id: id,
+      },
+    });
+  };
   return (
     <div className={styles.container}>
       {data.getAll.map((data: any) => (
@@ -28,6 +39,7 @@ const Home: NextPage = () => {
           <p>{data.title}</p>
           <h1>内容</h1>
           <p>{data.description}</p>
+          <button onClick={() => removePost(data.id)}>削除</button>
         </div>
       ))}
       <hr />
