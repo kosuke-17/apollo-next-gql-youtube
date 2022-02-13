@@ -1,15 +1,7 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
-import { useQuery, gql } from "@apollo/client";
-
-const getAll = gql`
-  {
-    getAll {
-      title
-      description
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { getAll } from "../graphql/Query";
 
 const Home: NextPage = () => {
   const { data, loading, error } = useQuery(getAll);
